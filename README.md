@@ -121,6 +121,3 @@ docker compose down -v
 ```
 
 ---
-
-Made with ❤️ for your blog post!
-
