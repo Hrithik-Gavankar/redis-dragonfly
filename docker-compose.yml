@@ -1,0 +1,24 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis-benchmark
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly no --save ""
+    networks:
+      - benchmark-net
+
+  dragonfly:
+    image: docker.dragonflydb.io/dragonflydb/dragonfly
+    container_name: dragonfly-benchmark
+    ports:
+      - "6380:6379"
+    ulimits:
+      memlock: -1
+    command: dragonfly --logtostderr --proactor_threads=4 --maxmemory=2gb
+    networks:
+      - benchmark-net
+
+networks:
+  benchmark-net:
+    driver: bridge

@@ -1,0 +1,21 @@
+{
+  "name": "redis-dragonfly-benchmark",
+  "version": "1.0.0",
+  "description": "Performance comparison between Redis and DragonflyDB",
+  "main": "benchmark.js",
+  "type": "module",
+  "scripts": {
+    "benchmark": "node benchmark.js",
+    "dashboard": "node dashboard.js",
+    "start": "docker compose up -d && echo 'Waiting for databases...' && sleep 3 && node benchmark.js"
+  },
+  "dependencies": {
+    "ioredis": "^5.3.2",
+    "chalk": "^5.3.0",
+    "cli-table3": "^0.6.3",
+    "ora": "^7.0.1",
+    "blessed": "^0.1.81",
+    "blessed-contrib": "^4.11.0"
+  }
+}
+
