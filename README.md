@@ -2,7 +2,7 @@
 
 > **When Speed Takes Flight: How DragonflyDB Outruns Redis in Modern Caching**
 
-A comprehensive benchmark comparison tool comparing Redis and DragonflyDB performance.
+A comprehensive benchmark comparison tool for Redis and DragonflyDB performance analysis.
 
 ## 📋 Prerequisites
 
@@ -18,8 +18,8 @@ docker compose up -d
 ```
 
 This will spin up:
-- **Redis** on port `6379`
-- **DragonflyDB** on port `6380`
+- **Redis 7** on port `6379`
+- **DragonflyDB** on port `6380` (with 4 threads)
 
 ### 2. Install Dependencies
 
@@ -33,63 +33,25 @@ npm install
 npm run benchmark
 ```
 
-This runs a comprehensive benchmark comparing:
-- SET operations (string storage)
-- GET operations (data retrieval)
-- INCR operations (atomic counters)
-- LPUSH operations (list operations)
-- HSET operations (hash tables)
+## 📊 Benchmarks Included
 
-### 4. (Optional) Live Dashboard
+| Benchmark | Description | Why It Matters |
+|-----------|-------------|----------------|
+| Concurrent SCAN | Multiple clients scanning large datasets | Tests parallel scanning capability |
+| KEYS Pattern | Pattern matching on large keyspace | Blocking in Redis, parallel in Dragonfly |
+| Memory Info | Admin commands under load | Operational monitoring |
+| Bulk MSET/MGET | Large batch operations | Throughput testing |
+| Sorted Set Queries | Complex range queries | Real-world leaderboard patterns |
+| Mixed Workload | SET, GET, INCR, LPUSH, HSET | Application simulation |
 
-For a real-time visual dashboard:
+## 🏗️ Architecture Comparison
 
-```bash
-npm run dashboard
-```
-
-Press `q` to quit the dashboard.
-
-## 📊 What Gets Benchmarked
-
-| Operation | Description | Use Case |
-|-----------|-------------|----------|
-| SET | Store key-value pairs | Session storage, caching |
-| GET | Retrieve stored values | Cache reads |
-| INCR | Atomic counter increment | Rate limiting, counters |
-| LPUSH | Add items to list | Message queues, logs |
-| HSET | Store hash field-value | Object storage, user profiles |
-
-## 🎯 Benchmark Parameters
-
-- **Default Operations**: 50,000 per test
-- **Value Size**: 1KB (medium) for standard tests
-- **Large Scale Test**: 100,000 operations with 10KB values
-
-## 📸 Screenshot Guide for Your Blog
-
-1. **Run the benchmark** and capture the colorful comparison table
-2. **Run the dashboard** for real-time visual charts
-3. **Terminal output** shows winner for each operation type
-
-## 🔧 Configuration
-
-Edit `benchmark.js` to customize:
-
-```javascript
-const OPERATIONS = {
-  small: 10000,   // Quick test
-  medium: 50000,  // Default
-  large: 100000   // Stress test
-};
-
-const VALUE_SIZES = {
-  tiny: 10,       // 10 bytes
-  small: 100,     // 100 bytes
-  medium: 1024,   // 1 KB
-  large: 10240    // 10 KB
-};
-```
+| Feature | Redis | DragonflyDB |
+|---------|-------|-------------|
+| Threading | Single-threaded | Multi-threaded |
+| CPU Usage | 1 core | All available cores |
+| Scaling | Horizontal (cluster) | Vertical (single instance) |
+| Protocol | Redis Protocol | 100% Redis Compatible |
 
 ## 🐳 Docker Commands
 
@@ -103,21 +65,23 @@ docker compose logs -f
 # Stop databases
 docker compose down
 
-# Remove volumes (clean data)
+# Clean up (remove data)
 docker compose down -v
 ```
 
-## 📝 Blog Post Tips
+## 📝 Key Insights
 
-- DragonflyDB is designed as a drop-in Redis replacement
-- It uses a multi-threaded architecture vs Redis's single-threaded model
-- Best performance gains seen in multi-core environments
-- Both use the same Redis protocol and commands
+- **DragonflyDB** uses a multi-threaded shared-nothing architecture
+- Excels at operations that would block Redis (SCAN, KEYS)
+- Best performance on multi-core servers (8+ cores)
+- Drop-in Redis replacement - same protocol, zero code changes
 
-## 🛑 Cleanup
+## 📚 Resources
 
-```bash
-docker compose down -v
-```
+- [DragonflyDB Official Benchmarks](https://www.dragonflydb.io/benchmarks)
+- [DragonflyDB Documentation](https://www.dragonflydb.io/docs)
+- [Redis Documentation](https://redis.io/docs)
 
----
+## License
+
+MIT
